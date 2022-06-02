@@ -1,0 +1,142 @@
+type Query {
+  getAlbums(where: AlbumArgs, order: [Orders!], limit: Float, skip: Float): [Album!]!
+  getAlbum(where: AlbumArgs, order: [Orders!], limit: Float, skip: Float): Album!
+  getImages(where: ImageArgs, order: [Orders!], limit: Float, skip: Float): [Image!]!
+  getImage(where: ImageArgs, order: [Orders!], limit: Float, skip: Float): Image!
+  getTags(where: TagArgs, order: [Orders!], limit: Float, skip: Float): [Tag!]!
+  getTag(where: TagArgs, order: [Orders!], limit: Float, skip: Float): Tag!
+  getUsers(where: UserArgs, order: [Orders!], limit: Float, skip: Float): [User!]!
+  getUser(where: UserArgs, order: [Orders!], limit: Float, skip: Float): User!
+  refreshToken: User!
+}
+
+type Mutation {
+  updateAlbum(name: String, readable: Boolean, images: [ImageInput!], user: UserInput, tag: [TagInput!], id: String): Album!
+  deleteAlbum(id: String!): Album!
+  updateImage(path: Upload!, album: AlbumInput!, id: String): Image!
+  deleteImage(id: String!): Image!
+  register(password: String!, username: String!): User!
+  login(password: String!, username: String!): Logged!
+  updateUser(password: String, username: String, id: String): User!
+  deleteUser(id: String!): User!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type Image {
+  album: Album!
+  path: String!
+  insertTime: DateTime!
+  updateTime: DateTime!
+  id: String!
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+type User {
+  albums: [Album!]!
+  username: String
+  insertTime: DateTime!
+  updateTime: DateTime!
+  id: String!
+}
+
+type Tag {
+  album: [Album!]!
+  hashtag: String!
+  insertTime: DateTime!
+  updateTime: DateTime!
+  id: String!
+}
+
+type Album {
+  name: String
+  readable: Boolean
+  images: [Image!]
+  user: User
+  tag: [Tag!]
+  insertTime: DateTime!
+  updateTime: DateTime!
+  id: String!
+}
+
+type Logged {
+  token: String!
+  user: User!
+}
+
+input ImageInput {
+  path: Upload!
+  album: AlbumInput!
+  id: String
+}
+
+input UserInput {
+  password: String
+  username: String
+  id: String
+}
+
+input TagInput {
+  hashtag: String!
+  album: AlbumInput
+  id: String
+}
+
+input AlbumInput {
+  name: String
+  readable: Boolean
+  images: [ImageInput!]
+  user: UserInput
+  tag: [TagInput!]
+  id: String
+}
+
+input StringArgument {
+  eq: String
+  like: String
+}
+
+input NumberArgument {
+  eq: Float
+  gt: Float
+  gte: Float
+  lt: Float
+  lte: Float
+}
+
+enum Orders {
+  ASC
+  DESC
+}
+
+input AlbumArgs {
+  name: StringArgument
+  readable: Boolean
+  images: ImageArgs
+  user: UserArgs
+  tag: TagArgs
+  id: StringArgument
+}
+
+input ImageArgs {
+  path: Upload
+  album: AlbumArgs
+  id: StringArgument
+}
+
+input UserArgs {
+  password: StringArgument
+  username: StringArgument
+  id: StringArgument
+}
+
+input TagArgs {
+  hashtag: StringArgument
+  album: AlbumArgs
+  id: StringArgument
+}
